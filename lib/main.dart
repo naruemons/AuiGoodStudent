@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:auigoodstudent/states/authen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  HttpOverrides.global = MyHttpOverride();
   runApp(MyApp());
 }
 
@@ -13,5 +16,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Authen(),
     );
+  }
+}
+
+class MyHttpOverride extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    // TODO: implement createHttpClient
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (cert, host, port) => true;
   }
 }
