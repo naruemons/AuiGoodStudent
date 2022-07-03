@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:auigoodstudent/models/user_medel.dart';
+import 'package:auigoodstudent/states/my_service.dart';
 import 'package:auigoodstudent/utility/my_constant.dart';
 import 'package:auigoodstudent/utility/my_dialog.dart';
 import 'package:auigoodstudent/widgets/show_buttom.dart';
 import 'package:auigoodstudent/widgets/show_form.dart';
 import 'package:auigoodstudent/widgets/show_image.dart';
 import 'package:auigoodstudent/widgets/show_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class Authen extends StatefulWidget {
@@ -14,8 +19,7 @@ class Authen extends StatefulWidget {
 }
 
 class _AuthenState extends State<Authen> {
-
-String? user,password;
+  String? user, password;
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +40,51 @@ String? user,password;
 
   Container buttonLogin() {
     return Container(
-          width: 250,
-          margin: const EdgeInsets.only(top: 8),
-          child: ShowButton(
-            label: 'Login',
-            pressFunc: () {
-              if ((user?.isEmpty??true)||(password?.isEmpty??true)) {
-                MyDialog(context: context).normalDialog(title: 'Have Space ?', subTitle: 'Please Fill Every Blank');
-              } else {
-                
-              }
-            },
-          ),
-        );
+      width: 250,
+      margin: const EdgeInsets.only(top: 8),
+      child: ShowButton(
+        label: 'Login',
+        pressFunc: () {
+          if ((user?.isEmpty ?? true) || (password?.isEmpty ?? true)) {
+            MyDialog(context: context).normalDialog(
+                title: 'Have Space ?', subTitle: 'Please Fill Every Blank');
+          } else {
+            //check login
+            processCheckLogin();
+          }
+        },
+      ),
+    );
+  }
+
+  Future<void> processCheckLogin() async {
+    String path =
+        'https://www.androidthai.in.th/goodstd/getUserWhereUserAui.php?isAdd=true&user=$user';
+    await Dio().get(path).then((value) {
+      if (value.toString() == 'null') {
+        MyDialog(context: context).normalDialog(
+            title: 'User False?', subTitle: 'No $user in my Database');
+      } else {
+        for (var element in json.decode(value.data)) {
+          print('element ==> $element');
+          UserModel userModel = UserModel.fromMap(element);
+          if (password == userModel.password) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyService(
+                    userModel: userModel,
+                  ),
+                ),
+                (route) => false);
+          } else {
+            MyDialog(context: context).normalDialog(
+                title: 'Password False',
+                subTitle: 'Please Try Again Password False');
+          }
+        }
+      }
+    });
   }
 
   Container formPassword() {

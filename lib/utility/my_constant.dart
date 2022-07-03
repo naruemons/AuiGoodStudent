@@ -2,6 +2,23 @@ import 'package:flutter/material.dart';
 
 class MyConstant {
 //filed
+
+  static var wrongdoings = <String>[
+    'แต่งตัวผิดระเบียบ',
+    'มาสาย ไม่ตรงเวลา',
+    'ลอกการบ้าน',
+    'เสียงดัง โวยวาย',
+    'ไม่เข้าแถว',
+  ];
+
+  static var wrongPoints = <int>[
+    10,
+    15,
+    20,
+    5,
+    10,
+  ];
+
   static Color dark = const Color.fromARGB(255, 1, 12, 168);
   static Color primary = const Color.fromARGB(255, 252, 47, 20);
   static Color litht = const Color.fromARGB(255, 116, 201, 113);
@@ -17,6 +34,12 @@ class MyConstant {
   TextStyle h2Style() => TextStyle(
         fontSize: 18,
         color: dark,
+        fontWeight: FontWeight.w700,
+      );
+
+  TextStyle h2WhiteStyle() => const TextStyle(
+        fontSize: 18,
+        color: Colors.white,
         fontWeight: FontWeight.w700,
       );
 
